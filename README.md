@@ -9,4 +9,4 @@ The developer file names required are:
 
 Create these files within the app directory and set the PGDATABASE to your db name.
 
-For example: PGDATABASE = your_db_name_here
+For example: PGDATABASE=your_db_name_here
