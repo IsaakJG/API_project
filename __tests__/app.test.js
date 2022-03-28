@@ -24,6 +24,11 @@ describe.only("/api/treasures", () => {
       });
   });
   test("404: returns error when given invalid path", () => {
-    return request(app).get("/api/invalid_path").expect(404);
+    return request(app)
+      .get("/api/invalid_path")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.message).toBe("Route not found");
+      });
   });
 });
