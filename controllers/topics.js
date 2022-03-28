@@ -1,11 +1,12 @@
+// Model Requires
 const { selectTopics } = require("../models/topics");
 
-exports.getTopics = (req, res, next) => {
-  const path = req.route.path;
-  console.log(path);
-  selectTopics(path)
-    .then((topics) => {
-      res.send({ topics });
-    })
-    .catch(next);
+// Controller funcs
+exports.getTopics = async (req, res, next) => {
+  try {
+    const topics = await selectTopics();
+    res.send({ topics });
+  } catch (err) {
+    next(err);
+  }
 };

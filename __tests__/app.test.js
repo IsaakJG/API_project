@@ -8,27 +8,19 @@ beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
 describe.only("/api/treasures", () => {
-  test("200: responds with an empty ", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then((res) => {
-        expect(res.body.topics).toBeInstanceOf(Array);
-        expect(res.body.topics.length).toBe(3);
-        res.body.topics.forEach((topic) => {
-          expect(topic).toMatchObject({
-            slug: expect.any(String),
-            description: expect.any(String),
-          });
-        });
+  test("200: responds with an empty ", async () => {
+    const res = await request(app).get("/api/topics").expect(200);
+    expect(res.body.topics).toBeInstanceOf(Array);
+    expect(res.body.topics.length).toBe(3);
+    res.body.topics.forEach((topic) => {
+      expect(topic).toMatchObject({
+        slug: expect.any(String),
+        description: expect.any(String),
       });
+    });
   });
-  test("404: returns error when given invalid path", () => {
-    return request(app)
-      .get("/api/invalid_path")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.message).toBe("Route not found");
-      });
+  test("404: returns error when given invalid path", async () => {
+    const res = await request(app).get("/api/invalid_path").expect(404);
+    expect(res.body.message).toBe("Route not found");
   });
 });
