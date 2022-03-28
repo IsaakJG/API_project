@@ -4,9 +4,11 @@ app.use(express.json());
 
 // Controller Requires
 const { getTopics } = require("./controllers/topics");
+const { getArticleById } = require("./controllers/articles");
 
 //Endpoints
 app.get("/api/topics", getTopics);
+app.get("/api/articles/:article_id", getArticleById);
 
 // Custom Error Handling
 app.use((err, req, res, next) => {
