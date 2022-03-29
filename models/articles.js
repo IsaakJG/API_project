@@ -18,7 +18,7 @@ exports.updateArticleById = async (article_id, newArticle) => {
   const { inc_votes } = newArticle;
 
   if (inc_votes) {
-    // want to check if inc_votes is truthy and if so run the db.query, if not on line 32 we will reject the promise with 404
+    // want to check if inc_votes is truthy and if so run the db.query, if not on line 32 we will reject the promise with 400
     const result = await db.query(
       "UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *",
       [inc_votes, article_id]
