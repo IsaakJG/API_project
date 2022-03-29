@@ -25,7 +25,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("200: responds with a single article when given a single article_id", async () => {
     const article_id = 1;
     const res = await request(app)
@@ -53,5 +53,11 @@ describe.only("GET /api/articles/:article_id", () => {
   test("404: shows correct error status code and message when given an invalid article_id", async () => {
     const res = await request(app).get("/api/articles/9999").expect(404);
     expect(res.body.message).toBe("Invalid article ID");
+  });
+  test("400: shows correct error status code and message when given an invalid article_id data type", async () => {
+    const res = await request(app)
+      .get("/api/articles/invalid_data_type")
+      .expect(400);
+    expect(res.body.message).toBe("Bad request");
   });
 });
