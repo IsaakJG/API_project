@@ -4,11 +4,14 @@ app.use(express.json());
 
 // Controller Requires
 const { getTopics } = require("./controllers/topics");
-const { getArticleById } = require("./controllers/articles");
+const { getArticleById, patchArticleById } = require("./controllers/articles");
 
-//Endpoints
+// GET Endpoints
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
+
+//PATCH Endpoints
+app.patch("/api/articles/:article_id", patchArticleById);
 
 // PSQL Error Handling
 app.use((err, req, res, next) => {
