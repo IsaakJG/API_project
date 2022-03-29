@@ -1,5 +1,5 @@
 // Model Requires
-const { selectArticleById } = require("../models/articles");
+const { selectArticleById, updateArticleById } = require("../models/articles");
 
 // Controller funcs
 exports.getArticleById = async (req, res, next) => {
@@ -9,6 +9,19 @@ exports.getArticleById = async (req, res, next) => {
 
     const article = await selectArticleById(article_id);
     res.status(200).send({ article });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.patchArticleById = async (req, res, next) => {
+  try {
+    // we now need both the article_id from the params and now the .send from the body to put within our model function
+    const { article_id } = req.params;
+    const newArticle = req.body;
+
+    const updatedArticle = await updateArticleById(article_id, newArticle);
+    res.status(200).send({ article: updatedArticle });
   } catch (err) {
     next(err);
   }
