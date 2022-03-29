@@ -138,3 +138,22 @@ describe("PATCH /api/articles/:article_id", () => {
     expect(res.body.message).toBe("Bad request");
   });
 });
+
+describe("GET /api/users", () => {
+  test("200: responds with an array of all users", async () => {
+    const res = await request(app).get("/api/users").expect(200);
+    expect(res.body.users).toBeInstanceOf(Array);
+    expect(res.body.users.length).toBe(4);
+    res.body.users.forEach((topic) => {
+      expect(topic).toMatchObject({
+        username: expect.any(String),
+        name: expect.any(String),
+        avatar_url: expect.any(String),
+      });
+    });
+  });
+  test("404: returns error when given invalid path", async () => {
+    const res = await request(app).get("/api/invalid_path").expect(404);
+    expect(res.body.message).toBe("Route not found");
+  });
+});
