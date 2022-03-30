@@ -67,3 +67,34 @@ exports.selectCommentsByArticleId = async (article_id) => {
     });
   }
 };
+
+exports.insertCommentByArticleId = async (article_id, username, body) => {
+  // first checking whether the article_id is valid or in the database
+  const articleCheckResult = await db.query(
+    `SELECT * FROM articles WHERE article_id = $1`,
+    [article_id]
+  );
+  if (articleCheckResult.rows.length) {
+    // No once we know article_id is valid we then post the comment using the article_id
+    const insertComment = await db.query(
+      `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3);`,
+      [article_id, username, body]
+    );
+
+    // Once the comment is added we need to retrieve the newest comment to send back to our controller/client
+    const getNewCommentResult = await db.query(
+      `SELECT * FROM comments 
+      WHERE article_id = $1 
+      ORDER BY comment_id DESC
+      LIMIT 1;`,
+      [article_id]
+    );
+
+    return getNewCommentResult.rows[0];
+  } else {
+    return Promise.reject({
+      status: 404,
+      message: "Article ID's comments not found",
+    });
+  }
+};

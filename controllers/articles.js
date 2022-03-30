@@ -4,6 +4,7 @@ const {
   updateArticleById,
   selectCommentsByArticleId,
   selectArticles,
+  insertCommentByArticleId,
 } = require("../models/articles");
 
 // Controller funcs
@@ -47,6 +48,18 @@ exports.getCommentsByArticleId = async (req, res, next) => {
     const result = await selectCommentsByArticleId(article_id);
 
     res.send({ comments: result });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postCommentsByArticleId = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    const { username } = req.body;
+    const { body } = req.body;
+    const result = await insertCommentByArticleId(article_id, username, body);
+    res.status(201).send({ comment: result });
   } catch (err) {
     next(err);
   }

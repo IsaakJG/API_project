@@ -256,3 +256,61 @@ describe("GET /api/articles", () => {
     expect(res.body.message).toBe("Route not found");
   });
 });
+
+describe("POST /api/articles/:article_id/comments", () => {
+  const newComment = {
+    username: "rogersop",
+    body: "A very nice and lovely comment!",
+  };
+
+  test("status:201, responds with park newly added to the database", async () => {
+    const article_id = 1;
+    const { body } = await request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .send(newComment)
+      .expect(201);
+    expect(body.comment).toEqual({
+      comment_id: 19,
+      article_id: 1,
+      author: "rogersop",
+      body: "A very nice and lovely comment!",
+      votes: 0,
+      created_at: expect.any(String),
+    });
+  });
+  test("404: shows correct error status code and message when given valid 'id type' that does not exist in database", async () => {
+    const article_id = 9999;
+    const { body } = await request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .send(newComment)
+      .expect(404);
+    expect(body.message).toBe("Article ID's comments not found");
+  });
+  test("400: shows correct error status code and message when given an invalid article_id data type", async () => {
+    const { body } = await request(app)
+      .post("/api/articles/invalid_data_type/comments")
+      .send(newComment)
+      .expect(400);
+    expect(body.message).toBe("Bad request");
+  });
+  test("400: responds with correct error message when article_id has no comments", async () => {
+    const { body } = await request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        invalid_key: "rogersop",
+        body: "A very nice and lovely comment!",
+      })
+      .expect(400);
+    expect(body.message).toBe("Bad request - invalid key name");
+  });
+  test("400: responds with correct error message when username is not in databases", async () => {
+    const { body } = await request(app)
+      .post("/api/articles/1/comments")
+      .send({
+        username: "IsaakJG",
+        body: "A very nice and lovely comment!",
+      })
+      .expect(400);
+    expect(body.message).toBe("Bad request - username does not exist");
+  });
+});
