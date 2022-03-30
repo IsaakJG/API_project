@@ -219,7 +219,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     const res = await request(app)
       .get("/api/articles/9999/comments")
       .expect(404);
-    expect(res.body.message).toBe("Invalid article ID");
+    expect(res.body.message).toBe("Article ID's comments not found");
   });
   test("400: shows correct error status code and message when given an invalid article_id data type", async () => {
     const res = await request(app)
@@ -228,9 +228,8 @@ describe("GET /api/articles/:article_id/comments", () => {
     expect(res.body.message).toBe("Bad request");
   });
   test("200: responds with correct error message when article_id has no comments", async () => {
-    const res = await request(app).get("/api/articles/2/comments").expect(200);
-    expect(res.body.comments).toBeInstanceOf(Array);
-    expect(res.body.comments.length).toBe(0);
+    const res = await request(app).get("/api/articles/2/comments").expect(404);
+    expect(res.body.message).toBe("Article ID's comments not found");
   });
 });
 

@@ -53,17 +53,22 @@ exports.updateArticleById = async (article_id, newArticle) => {
 };
 
 exports.selectCommentsByArticleId = async (article_id) => {
-  const result = await db.query(
-    "SELECT * FROM articles WHERE article_id = $1",
+  // const result = await db.query(
+  //   "SELECT * FROM articles WHERE article_id = $1",
+  //   [article_id]
+  // );
+  const commentsResult = await db.query(
+    `SELECT * FROM comments WHERE article_id = $1;`,
     [article_id]
   );
-  if (result.rows.length) {
-    const result1 = await db.query(
-      `SELECT * FROM comments WHERE article_id = $1;`,
-      [article_id]
-    );
-    return result1.rows;
+  console.log(commentsResult.rows.length);
+
+  if (commentsResult.rows.length) {
+    return commentsResult.rows;
   } else {
-    return Promise.reject({ status: 404, message: "Invalid article ID" });
+    return Promise.reject({
+      status: 404,
+      message: "Article ID's comments not found",
+    });
   }
 };
