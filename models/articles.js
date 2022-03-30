@@ -2,6 +2,18 @@
 const db = require("../db/connection");
 
 // Model Funcs
+exports.selectArticles = async () => {
+  const result = await db.query(
+    `SELECT articles.*, COUNT(comments.article_id)::INTEGER 
+    AS comment_count
+    FROM comments
+    RIGHT JOIN articles
+    ON articles.article_id = comments.article_id
+    GROUP BY articles.article_id;`
+  );
+  return result.rows;
+};
+
 exports.selectArticleById = async (article_id) => {
   const result = await db.query(
     `SELECT articles.*, 

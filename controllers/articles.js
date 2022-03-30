@@ -3,9 +3,19 @@ const {
   selectArticleById,
   updateArticleById,
   selectCommentsByArticleId,
+  selectArticles,
 } = require("../models/articles");
 
 // Controller funcs
+exports.getArticles = async (req, res, next) => {
+  try {
+    const articles = await selectArticles();
+    res.send({ articles });
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getArticleById = async (req, res, next) => {
   try {
     // we need the parametric endpoint from req.params to insert into our model func
