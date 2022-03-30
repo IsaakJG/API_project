@@ -53,15 +53,10 @@ exports.updateArticleById = async (article_id, newArticle) => {
 };
 
 exports.selectCommentsByArticleId = async (article_id) => {
-  // const result = await db.query(
-  //   "SELECT * FROM articles WHERE article_id = $1",
-  //   [article_id]
-  // );
   const commentsResult = await db.query(
     `SELECT * FROM comments WHERE article_id = $1;`,
     [article_id]
   );
-  console.log(commentsResult.rows.length);
 
   if (commentsResult.rows.length) {
     return commentsResult.rows;
