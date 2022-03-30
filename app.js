@@ -5,9 +5,10 @@ app.use(express.json());
 // Controller Requires
 const { getTopics } = require("./controllers/topics");
 const {
-  getArticles,
   getArticleById,
   patchArticleById,
+  getCommentsByArticleId,
+  getArticles,
 } = require("./controllers/articles");
 const { getUsers } = require("./controllers/users");
 
@@ -15,6 +16,7 @@ const { getUsers } = require("./controllers/users");
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleById);
 app.get("/api/users", getUsers);
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 app.get("/api/articles", getArticles);
 
 //PATCH Endpoints

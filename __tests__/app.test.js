@@ -199,6 +199,40 @@ describe("GET /api/articles/:article_id (plus comment_count)", () => {
   });
 });
 
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with an array of the article_id's comments", async () => {
+    const article_id = 1;
+    const res = await request(app)
+      .get(`/api/articles/${article_id}/comments`)
+      .expect(200);
+    res.body.comments.forEach((comment) => {
+      expect(comment).toMatchObject({
+        comment_id: expect.any(Number),
+        votes: expect.any(Number),
+        created_at: expect.any(String),
+        author: expect.any(String),
+        body: expect.any(String),
+      });
+    });
+  });
+  test("404: shows correct error status code and message when given valid 'id type' that does not exist in database", async () => {
+    const res = await request(app)
+      .get("/api/articles/9999/comments")
+      .expect(404);
+    expect(res.body.message).toBe("Article ID's comments not found");
+  });
+  test("400: shows correct error status code and message when given an invalid article_id data type", async () => {
+    const res = await request(app)
+      .get("/api/articles/invalid_data_type/comments")
+      .expect(400);
+    expect(res.body.message).toBe("Bad request");
+  });
+  test("404: responds with correct error message when article_id has no comments", async () => {
+    const res = await request(app).get("/api/articles/2/comments").expect(404);
+    expect(res.body.message).toBe("Article ID's comments not found");
+  });
+});
+
 describe("GET /api/articles", () => {
   test("200: responds with an array of all articles (including comment_count)", async () => {
     const res = await request(app).get("/api/articles").expect(200);
