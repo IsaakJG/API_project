@@ -198,3 +198,27 @@ describe("GET /api/articles/:article_id (plus comment_count)", () => {
     expect(res.body.message).toBe("Bad request");
   });
 });
+
+describe("GET /api/articles", () => {
+  test("200: responds with an array of all articles (including comment_count)", async () => {
+    const res = await request(app).get("/api/articles").expect(200);
+    expect(res.body.articles).toBeInstanceOf(Array);
+    expect(res.body.articles.length).toBe(12);
+    res.body.articles.forEach((article) => {
+      expect(article).toMatchObject({
+        article_id: expect.any(Number),
+        author: expect.any(String),
+        title: expect.any(String),
+        body: expect.any(String),
+        topic: expect.any(String),
+        created_at: expect.any(String),
+        votes: expect.any(Number),
+        comment_count: expect.any(Number),
+      });
+    });
+  });
+  test("404: returns error when given invalid path", async () => {
+    const res = await request(app).get("/api/invalid_path").expect(404);
+    expect(res.body.message).toBe("Route not found");
+  });
+});
