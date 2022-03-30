@@ -1,5 +1,9 @@
 // Model Requires
-const { selectArticleById, updateArticleById } = require("../models/articles");
+const {
+  selectArticleById,
+  updateArticleById,
+  selectCommentsByArticleId,
+} = require("../models/articles");
 
 // Controller funcs
 exports.getArticleById = async (req, res, next) => {
@@ -22,6 +26,17 @@ exports.patchArticleById = async (req, res, next) => {
 
     const updatedArticle = await updateArticleById(article_id, newArticle);
     res.status(200).send({ article: updatedArticle });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getCommentsByArticleId = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    const result = await selectCommentsByArticleId(article_id);
+
+    res.send({ comments: result });
   } catch (err) {
     next(err);
   }

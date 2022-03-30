@@ -39,3 +39,19 @@ exports.updateArticleById = async (article_id, newArticle) => {
     return Promise.reject({ status: 400, message: "Bad request" });
   }
 };
+
+exports.selectCommentsByArticleId = async (article_id) => {
+  const result = await db.query(
+    "SELECT * FROM articles WHERE article_id = $1",
+    [article_id]
+  );
+  if (result.rows.length) {
+    const result1 = await db.query(
+      `SELECT * FROM comments WHERE article_id = $1;`,
+      [article_id]
+    );
+    return result1.rows;
+  } else {
+    return Promise.reject({ status: 404, message: "Invalid article ID" });
+  }
+};
