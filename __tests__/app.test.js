@@ -215,7 +215,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
     });
   });
-  test("404: shows correct error status code and message when given an invalid article_id", async () => {
+  test("404: shows correct error status code and message when given valid 'id type' that does not exist in database", async () => {
     const res = await request(app)
       .get("/api/articles/9999/comments")
       .expect(404);
@@ -227,7 +227,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(400);
     expect(res.body.message).toBe("Bad request");
   });
-  test("200: responds with correct error message when article_id has no comments", async () => {
+  test("404: responds with correct error message when article_id has no comments", async () => {
     const res = await request(app).get("/api/articles/2/comments").expect(404);
     expect(res.body.message).toBe("Article ID's comments not found");
   });
