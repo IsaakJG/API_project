@@ -29,12 +29,6 @@ app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
 // PSQL Error Handling
 app.use((err, req, res, next) => {
   const badReqCodes = ["22P02", "23502", "23503"];
-  //   if (badReqCodes.includes(err.code)) {
-  //     res.status(400).send({ message: "Bad request" });
-  //   } else {
-  //     next(err);
-  //   }
-  console.log(err);
   if (err.code === "23503") {
     res
       .status(400)
