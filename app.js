@@ -34,9 +34,11 @@ app.use((err, req, res, next) => {
   //   } else {
   //     next(err);
   //   }
-
+  console.log(err);
   if (err.code === "23503") {
-    res.status(400).send({ message: "Bad request - username does not exist" });
+    res
+      .status(400)
+      .send({ message: "Bad request - article_id or username does not exist" });
   } else if (err.code === "23502") {
     res.status(400).send({ message: "Bad request - invalid key name" });
   } else if (badReqCodes.includes(err.code)) {

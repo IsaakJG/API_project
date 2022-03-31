@@ -293,12 +293,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       created_at: expect.any(String),
     });
   });
-  test("404: shows correct error status code and message when given valid 'id type' that does not exist in database", async () => {
+  test("400: shows correct error status code and message when given valid 'id type' that does not exist in database", async () => {
     const { body } = await request(app)
       .post(`/api/articles/9999/comments`)
       .send(newComment)
-      .expect(404);
-    expect(body.message).toBe("Article ID's comments not found");
+      .expect(400);
+    expect(body.message).toBe(
+      "Bad request - article_id or username does not exist"
+    );
   });
   test("400: shows correct error status code and message when given an invalid article_id data type", async () => {
     const { body } = await request(app)
@@ -325,6 +327,8 @@ describe("POST /api/articles/:article_id/comments", () => {
         body: "A very nice and lovely comment!",
       })
       .expect(400);
-    expect(body.message).toBe("Bad request - username does not exist");
+    expect(body.message).toBe(
+      "Bad request - article_id or username does not exist"
+    );
   });
 });

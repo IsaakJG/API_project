@@ -56,8 +56,7 @@ exports.getCommentsByArticleId = async (req, res, next) => {
 exports.postCommentsByArticleId = async (req, res, next) => {
   try {
     const { article_id } = req.params;
-    const { username } = req.body;
-    const { body } = req.body;
+    const { username, body } = req.body;
     const result = await insertCommentByArticleId(article_id, username, body);
     res.status(201).send({ comment: result });
   } catch (err) {
