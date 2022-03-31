@@ -67,3 +67,11 @@ exports.selectCommentsByArticleId = async (article_id) => {
     });
   }
 };
+
+exports.insertCommentByArticleId = async (article_id, username, body) => {
+  const insertComment = await db.query(
+    `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *;`,
+    [article_id, username, body]
+  );
+  return insertComment.rows[0];
+};
