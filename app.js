@@ -12,6 +12,7 @@ const {
   postCommentsByArticleId,
 } = require("./controllers/articles");
 const { getUsers } = require("./controllers/users");
+const { deleteCommentById } = require("./controllers/comments");
 
 // GET Endpoints
 app.get("/api/topics", getTopics);
@@ -25,6 +26,9 @@ app.patch("/api/articles/:article_id", patchArticleById);
 
 //POST Endpoints
 app.post("/api/articles/:article_id/comments", postCommentsByArticleId);
+
+//DELETE Endpoints
+app.delete("/api/comments/:comment_id", deleteCommentById);
 
 // PSQL Error Handling
 app.use((err, req, res, next) => {

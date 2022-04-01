@@ -332,3 +332,15 @@ describe("POST /api/articles/:article_id/comments", () => {
     );
   });
 });
+
+describe.only("DELETE /api/comments/:comment_id", () => {
+  test("204: request deletes specific comment_Id", async () => {
+    await request(app).delete("/api/comments/1").expect(204);
+  });
+  test("404: responds with correct error message when given a valid comment_id but not in database", async () => {
+    await request(app).delete("/api/comments/1000").expect(404);
+  });
+  test("400: responds with correct error message when given wrong datatype for comment_id", async () => {
+    await request(app).delete("/api/comments/invalid_datatype").expect(400);
+  });
+});
