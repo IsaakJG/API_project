@@ -251,6 +251,47 @@ describe("GET /api/articles", () => {
       });
     });
   });
+  test("200: default order is date descending", async () => {
+    const res = await request(app).get("/api/articles").expect(200);
+    expect(res.body.articles).toBeInstanceOf(Array);
+    expect(res.body.articles.length).toBe(12);
+    expect(res.body.articles).toBeSortedBy("created_at", {
+      descending: true,
+    });
+  });
+  test("200: articles are ordered by a passed query", async () => {
+    const res = await request(app)
+      .get("/api/articles?sort_by=title")
+      .expect(200);
+    expect(res.body.articles).toBeInstanceOf(Array);
+    expect(res.body.articles.length).toBe(12);
+    expect(res.body.articles).toBeSortedBy("title", {
+      descending: true,
+    });
+  });
+  test("200: change the sort order with an order query", async () => {
+    const res = await request(app).get("/api/articles?order=ASC").expect(200);
+    expect(res.body.articles).toBeInstanceOf(Array);
+    expect(res.body.articles.length).toBe(12);
+    expect(res.body.articles).toBeSorted({ ascending: true });
+  });
+  test("200: filters the articles by the topic value specified in the query", async () => {
+    const res = await request(app).get("/api/articles?topic=cats").expect(200);
+    expect(res.body.articles).toBeInstanceOf(Array);
+    expect(res.body.articles.length).toBe(1);
+    res.body.articles.forEach((article) => {
+      expect(article).toMatchObject({
+        topic: "cats",
+        article_id: expect.any(Number),
+        author: expect.any(String),
+        title: expect.any(String),
+        body: expect.any(String),
+        created_at: expect.any(String),
+        votes: expect.any(Number),
+        comment_count: expect.any(Number),
+      });
+    });
+  });
   test("404: returns error when given invalid path", async () => {
     const res = await request(app).get("/api/invalid_path").expect(404);
     expect(res.body.message).toBe("Route not found");
@@ -333,7 +374,7 @@ describe("POST /api/articles/:article_id/comments", () => {
   });
 });
 
-describe.only("DELETE /api/comments/:comment_id", () => {
+describe("DELETE /api/comments/:comment_id", () => {
   test("204: request deletes specific comment_Id", async () => {
     await request(app).delete("/api/comments/1").expect(204);
   });
