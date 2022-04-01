@@ -10,7 +10,8 @@ const {
 // Controller funcs
 exports.getArticles = async (req, res, next) => {
   try {
-    const articles = await selectArticles();
+    const { sort_by, order, topic } = req.query;
+    const articles = await selectArticles(sort_by, order, topic);
     res.send({ articles });
   } catch (err) {
     next(err);

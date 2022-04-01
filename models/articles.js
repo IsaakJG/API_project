@@ -2,15 +2,61 @@
 const db = require("../db/connection");
 
 // Model Funcs
-exports.selectArticles = async () => {
-  const result = await db.query(
-    `SELECT articles.*, COUNT(comments.article_id)::INTEGER 
-    AS comment_count
-    FROM comments
-    RIGHT JOIN articles
-    ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id;`
-  );
+exports.selectArticles = async (
+  sort_by = "created_at",
+  order = "DESC",
+  topic
+) => {
+  // First off defining our valid coloumn and order queries, as well as setting up an array for potential query values.
+  const validColumns = [
+    "article_id",
+    "title",
+    "topic",
+    "author",
+    "body",
+    "created_at",
+    "votes",
+    "comment_count",
+  ];
+  const validOrders = ["ASC", "DESC"];
+  const validTopics = [
+    "mitch",
+    "cats",
+    "paper",
+    "coding",
+    "football",
+    "cooking",
+  ];
+  const queryValues = [];
+
+  // Also setting up our baseline query
+  let queryStr = `SELECT articles.*, COUNT(comments.article_id)::INTEGER 
+  AS comment_count
+  FROM comments
+  RIGHT JOIN articles
+  ON articles.article_id = comments.article_id`;
+
+  // Checking whether the client has given us a valid sort_by and order query
+  if (!validColumns.includes(sort_by) || !validOrders.includes(order)) {
+    return Promise.reject({
+      status: 400,
+      message: "Invalid column name or order",
+    });
+  }
+
+  // Now to check whether the client has given us a topic to filter by, if so we need to push that to our queryValues array and add the final line to our string.
+  if (validTopics.includes(topic)) {
+    queryStr += ` WHERE articles.topic = $1`;
+    queryValues.push(topic);
+  }
+
+  // The next line is then always goign to be GROUP BY...
+  queryStr += ` GROUP BY articles.article_id`;
+
+  // When the if statemnt passes, add this string to the query
+  queryStr += ` ORDER BY ${sort_by} ${order};`;
+
+  const result = await db.query(queryStr, queryValues);
   return result.rows;
 };
 
