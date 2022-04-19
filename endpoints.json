@@ -23,5 +23,24 @@
         }
       ]
     }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "",
+    "queries": "",
+    "exampleResponse": {
+      "article": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+      ]
+    }
+  },
+  "DELETE /api/articles/:article_id": {
+    "description": "returns a 204 status code after successful deletion",
+    "exampleResponse": { "err.status": 204 }
   }
 }
